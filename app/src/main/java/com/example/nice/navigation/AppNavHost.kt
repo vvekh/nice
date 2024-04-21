@@ -22,10 +22,15 @@ fun AppNavHost(
         composable(Screen.StartWindow.route){
             StartWindow(navController)
         }
-        composable(Screen.ProfileWindow.route){
-            ProfileWindow(navController)
-        }
 
+        composable(Screen.ProfileWindow.route,
+            arguments = listOf(navArgument("selectedRole"){
+                type = NavType.StringType
+                defaultValue = ""
+            })){
+            val selectedRole: String = it.arguments?.getString("selectedRole")!!
+            ProfileWindow(navController, selectedRole)
+        }
         composable(Screen.SignInWindow.route,
             arguments = listOf(navArgument("selectedRole"){
                 type = NavType.StringType

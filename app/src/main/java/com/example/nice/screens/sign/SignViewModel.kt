@@ -30,7 +30,7 @@ class SignViewModel : ViewModel() {
         val client = GetLocalClient()
     }
 
-    fun Authorization(navController: NavHostController) {
+    fun Authorization(navController: NavHostController, role: String) {
         val api = ClientAPI.start()?.create(InterfaceAPI::class.java)
         val call: Call<ClientDataResponse>? = api?.ClientAuthorize(clientLogin, clientPassword)
         call!!.enqueue(object : Callback<ClientDataResponse> {
@@ -40,7 +40,11 @@ class SignViewModel : ViewModel() {
 
                 val responseClient = response.body()
                 if (responseClient != null) {
-                    SetLocalCLient(responseClient)
+                    if (role == "Client"){
+                        SetLocalCLient(responseClient)
+                    }else{
+
+                    }
                 }
 
             }override fun onFailure(call: Call<ClientDataResponse>, t: Throwable) {

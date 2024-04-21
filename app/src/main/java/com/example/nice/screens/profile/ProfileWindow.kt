@@ -16,30 +16,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.nice.R
+import com.example.nice.screens.sign.GetLocalClient
 
 
 @Composable
-fun ProfileWindow(navController: NavHostController){
+fun ProfileWindow(navController: NavHostController, role: String){
+    var selectedRole = role
+    val cl = GetLocalClient()
 
-    Column(modifier = Modifier
-        .fillMaxHeight()
-        .fillMaxWidth()){
-        Image(painter = painterResource(id = R.drawable.backk), contentDescription = "image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize())
-    }
-    Column(modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center) {
-        Column(modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-        }
+    if(selectedRole == "Client"){
+        ClientProfile()
+    }else if(selectedRole == "Specialist"){
+        SpecialistProfile()
     }
 }
 
 @Preview (showSystemUi = true)
 @Composable
-fun ProfileWindow1(){
+fun ClientProfile(){
     Column(modifier = Modifier
         .fillMaxHeight()
         .fillMaxWidth()){
@@ -56,4 +50,9 @@ fun ProfileWindow1(){
                 modifier = Modifier.size(150.dp))
         }
     }
+}
+
+@Composable
+fun SpecialistProfile(){
+
 }
