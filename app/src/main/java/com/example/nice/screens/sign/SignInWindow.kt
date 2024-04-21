@@ -18,10 +18,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults.outlinedTextFieldColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -30,44 +26,44 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.nice.R
 import com.example.nice.navigation.Screen
-import com.google.gson.Gson
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInWindow(navController: NavHostController, role : String){
-    val viewModel : SignViewModel = viewModel()
+fun SignInWindow(navController: NavHostController, role : String) {
+    val viewModel: SignViewModel = viewModel()
     var selectedRole = role
-    var login by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
 
     Column(modifier = Modifier
         .fillMaxHeight()
-        .fillMaxWidth()){
-        Image(painter = painterResource(id = R.drawable.backk), contentDescription = "image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize())
+        .fillMaxWidth()
+    ) {
+        Image(modifier = Modifier.fillMaxSize(),
+            painter = painterResource(id = R.drawable.backk), contentDescription = null,
+            contentScale = ContentScale.Crop
+        )
     }
     Column(modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center) {
+        verticalArrangement = Arrangement.Center
+    ) {
         Column(modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(painter = painterResource(id = R.drawable.welcome_pic), contentDescription = "image",
-                modifier = Modifier
-                    .size(300.dp)
-                    .padding(bottom = 10.dp))
-            Column(modifier = Modifier
-                .fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                OutlinedTextField(value = login, onValueChange = {login = it},
+            verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(modifier = Modifier
+                .size(300.dp)
+                .padding(bottom = 10.dp),
+                painter = painterResource(id = R.drawable.welcome_pic), contentDescription = null
+            )
+            Column(modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                OutlinedTextField(value = viewModel.clientLogin,
+                    onValueChange = { viewModel.ClientLoginUpdate(it) },
                     label = { Text("Введите логин") },
                     shape = RoundedCornerShape(20.dp),
                     textStyle = TextStyle(fontSize = 17.sp),
@@ -80,76 +76,15 @@ fun SignInWindow(navController: NavHostController, role : String){
                         Icon(
                             painter = painterResource(id = R.drawable.user),
                             contentDescription = "",
-                            modifier = Modifier.size(20.dp))
+                            modifier = Modifier.size(20.dp)
+                        )
                     }
                 )
-                OutlinedTextField(value = password, onValueChange = {password = it},
+                OutlinedTextField(value = viewModel.clientPassword, onValueChange = { viewModel.ClientPasswordUpdate(it) },
                     label = { Text("Введите пароль") },
                     shape = RoundedCornerShape(20.dp),
                     textStyle = TextStyle(fontSize = 17.sp),
                     visualTransformation = PasswordVisualTransformation(),
-                    colors = outlinedTextFieldColors(
-                        focusedBorderColor = colorResource(id = R.color.purple),
-                        focusedLabelColor = colorResource(id = R.color.purple),
-                        focusedLeadingIconColor = colorResource(id = R.color.purple),
-                    ),
-                    leadingIcon = {
-                        Icon(painter = painterResource(id = R.drawable.lock), contentDescription = "",
-                            modifier = Modifier.size(20.dp))
-                    }
-                )
-                Button(onClick = {
-                    viewModel.Authorization(login, password) {client ->
-                        val jsonClient = Gson().toJson(client)
-                        navController.navigate(Screen.ProfileWindow.activeClient(jsonClient))}
-                    },
-                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.siren)),
-                    modifier = Modifier.padding(top = 20.dp),
-                    elevation = ButtonDefaults.buttonElevation(5.dp)) {
-                    Text(text = "Войти", fontSize = 20.sp, color = colorResource(id = R.color.white))
-                }
-            }
-            Text(modifier = Modifier
-                .clickable { navController.navigate(Screen.SignUpWindow.selectedRole(selectedRole)) }
-                .padding(top = 10.dp),
-                color = colorResource(id = R.color.gray),
-                fontWeight = FontWeight.Bold,
-                text = "Ещё нет аккаунта? Зарегистрируйтесь")
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview (showSystemUi = true)
-@Composable
-fun SignInWindow1(){
-    var login by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
-    Column(modifier = Modifier
-        .fillMaxHeight()
-        .fillMaxWidth()){
-        Image(painter = painterResource(id = R.drawable.backk), contentDescription = "image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize())
-    }
-    Column(modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center) {
-        Column(modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            Image(painter = painterResource(id = R.drawable.welcome_pic), contentDescription = "image",
-                modifier = Modifier
-                    .size(300.dp)
-                    .padding(bottom = 10.dp))
-            Column(modifier = Modifier
-                .fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                OutlinedTextField(value = login, onValueChange = {login = it},
-                    label = { Text("Введите логин") },
-                    shape = RoundedCornerShape(20.dp),
-                    textStyle = TextStyle(fontSize = 17.sp),
                     colors = outlinedTextFieldColors(
                         focusedBorderColor = colorResource(id = R.color.purple),
                         focusedLabelColor = colorResource(id = R.color.purple),
@@ -157,35 +92,31 @@ fun SignInWindow1(){
                     ),
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.user),
+                            painter = painterResource(id = R.drawable.lock),
                             contentDescription = "",
-                            modifier = Modifier.size(20.dp))
+                            modifier = Modifier.size(20.dp)
+                        )
                     }
                 )
-                OutlinedTextField(value = password, onValueChange = {password = it},
-                    label = { Text("Введите пароль") },
-                    shape = RoundedCornerShape(20.dp),
-                    textStyle = TextStyle(fontSize = 17.sp),
-                    visualTransformation = PasswordVisualTransformation(),
-                    colors = outlinedTextFieldColors(
-                        focusedBorderColor = colorResource(id = R.color.purple),
-                        focusedLabelColor = colorResource(id = R.color.purple),
-                        focusedLeadingIconColor = colorResource(id = R.color.purple),
-                    ),
-                    leadingIcon = {
-                        Icon(painter = painterResource(id = R.drawable.lock), contentDescription = "",
-                            modifier = Modifier.size(20.dp))
-                    }
-                )
-                Button(onClick = {},
-                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.siren)),
+                Button(onClick = { viewModel.Authorization(navController) },
                     modifier = Modifier.padding(top = 20.dp),
-                    elevation = ButtonDefaults.buttonElevation(5.dp)) {
-                    Text(text = "Войти", fontSize = 20.sp, color = colorResource(id = R.color.white))
+                    colors = ButtonDefaults.buttonColors(colorResource(id = R.color.siren)),
+                    elevation = ButtonDefaults.buttonElevation(5.dp)
+                ) {
+                    Text(text = "Войти",
+                        fontSize = 20.sp,
+                        color = colorResource(id = R.color.white)
+                    )
                 }
             }
             Text(modifier = Modifier
-                .clickable {}
+                .clickable {
+                    navController.navigate(
+                        Screen.SignUpWindow.selectedRole(
+                            selectedRole
+                        )
+                    )
+                }
                 .padding(top = 10.dp),
                 color = colorResource(id = R.color.gray),
                 fontWeight = FontWeight.Bold,

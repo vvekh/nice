@@ -1,6 +1,6 @@
 package com.example.nice.retrofit
 
-import com.example.nice.models.Client
+import com.example.nice.models.ClientDataResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -12,6 +12,6 @@ interface InterfaceAPI {
     fun ClientAuthorize(
         @Path("login") login: String?,
         @Path("password") password: String?
-    ): Call<Client>
+    ): Call<ClientDataResponse>
 
 }

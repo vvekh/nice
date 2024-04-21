@@ -22,14 +22,8 @@ fun AppNavHost(
         composable(Screen.StartWindow.route){
             StartWindow(navController)
         }
-
-        composable(Screen.ProfileWindow.route,
-            arguments = listOf(navArgument("activeClient"){
-                type = NavType.StringType
-                defaultValue = ""
-            })){
-            val activeClient: String = it.arguments?.getString("activeClient")!!
-            ProfileWindow(navController, activeClient)
+        composable(Screen.ProfileWindow.route){
+            ProfileWindow(navController)
         }
 
         composable(Screen.SignInWindow.route,
