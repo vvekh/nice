@@ -1,16 +1,20 @@
 package com.example.nice.models
 
-data class Specialist (
-    val id: Int,
-    val username: Int,
-    val usersurname: Int,
-    val birthdate: Int,
-    val login: Int,
-    val password: Int,
-    val sexid: Int,
-    val graduationid: Int,
-    val graduatuon2: Int,
-    val timelineid: Int,
-    val price: Float,
-    val status: String
+data class SpecialistData (
+    val login: String,
+    val password: String
+)
+data class SpecialistDataResponse(
+    val id: String?,
+    val username: String?,
+    val usersurname: String?,
+    val birthdate: String?,
+    val login: String?,
+    val password: String?,
+    val sexid: String?,
+    val graduationid: String?,
+    val graduatuon2: String?,
+    val timelineid: String?,
+    val price: String?,
+    val status: String?
 )

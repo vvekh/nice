@@ -5,66 +5,74 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavHostController
 import com.example.nice.models.ClientDataResponse
+import com.example.nice.models.SpecialistDataResponse
 import com.example.nice.retrofit.ClientAPI
 import com.example.nice.retrofit.InterfaceAPI
+import com.example.nice.screens.GetLocalClient
+import com.example.nice.screens.GetLocalSpecialist
+import com.example.nice.screens.SetLocalCLient
+import com.example.nice.screens.SetLocalSpecialist
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class SignViewModel : ViewModel() {
-    var clientLogin by mutableStateOf("")
+    var userLogin by mutableStateOf("")
         private set
-    var clientPassword by mutableStateOf("")
+    var userPassword by mutableStateOf("")
         private set
+    fun UserLoginUpdate(login: String){
+        userLogin = login
+    }
+    fun UserPasswordUpdate(password: String){
+        userPassword = password
+    }
 
-    fun ClientLoginUpdate(login: String){
-        clientLogin = login
-    }
-    fun ClientPasswordUpdate(password: String){
-        clientPassword = password
-    }
 
     fun LoadClientData(){
         val client = GetLocalClient()
     }
-
-    fun Authorization(navController: NavHostController, role: String) {
-        val api = ClientAPI.start()?.create(InterfaceAPI::class.java)
-        val call: Call<ClientDataResponse>? = api?.ClientAuthorize(clientLogin, clientPassword)
-        call!!.enqueue(object : Callback<ClientDataResponse> {
-            override fun onResponse(call: Call<ClientDataResponse>, response: Response<ClientDataResponse>) {
-
-                Log.d("SUCCESS", java.lang.String.valueOf(response.toString()))
-
-                val responseClient = response.body()
-                if (responseClient != null) {
-                    if (role == "Client"){
-                        SetLocalCLient(responseClient)
-                    }else{
-
-                    }
-                }
-
-            }override fun onFailure(call: Call<ClientDataResponse>, t: Throwable) {
-                Log.d("BAD RESPONSE", java.lang.String.valueOf(t.toString()))
-            }
-        })
+    fun LoadSpecialistData(){
+        val specialist = GetLocalSpecialist()
     }
-}
 
-private var client: ClientDataResponse? = null
-fun SetLocalCLient(newClient: ClientDataResponse){
-    client = ClientDataResponse(
-        newClient.id,
-        newClient.username,
-        newClient.login,
-        newClient.password,
-        newClient.birthdate,
-        newClient.timelineid
-    )
-}
-fun GetLocalClient(): ClientDataResponse?{
-    return client
+    fun Authorization(role: String) {
+        val api = ClientAPI.start()?.create(InterfaceAPI::class.java)
+        if(role == "Client"){
+            val call: Call<ClientDataResponse>? = api?.ClientAuthorize(userLogin, userPassword)
+            call!!.enqueue(object : Callback<ClientDataResponse> {
+                override fun onResponse(call: Call<ClientDataResponse>, response: Response<ClientDataResponse>) {
+
+                    Log.d("SUCCESS", java.lang.String.valueOf(response.toString()))
+
+                    val responseClient = response.body()
+                    if (responseClient != null) {
+                        SetLocalCLient(responseClient)
+                    }
+
+                }override fun onFailure(call: Call<ClientDataResponse>, t: Throwable) {
+                    Log.d("BAD RESPONSE", java.lang.String.valueOf(t.toString()))
+                }
+            })
+        }else if(role == "Specialist"){
+            val call: Call<SpecialistDataResponse>? = api?.SpecialistAuthorize(userLogin, userPassword)
+            call!!.enqueue(object : Callback<SpecialistDataResponse> {
+                override fun onResponse(call: Call<SpecialistDataResponse>, response: Response<SpecialistDataResponse>) {
+
+                    Log.d("SUCCESS", java.lang.String.valueOf(response.toString()))
+
+                    val responseSpecialist = response.body()
+                    if (responseSpecialist != null) {
+                        SetLocalSpecialist(responseSpecialist)
+                    }
+
+                }override fun onFailure(call: Call<SpecialistDataResponse>, t: Throwable) {
+                    Log.d("BAD RESPONSE", java.lang.String.valueOf(t.toString()))
+                }
+            })
+        }
+
+    }
+
 }

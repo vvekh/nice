@@ -1,6 +1,7 @@
 package com.example.nice.retrofit
 
 import com.example.nice.models.ClientDataResponse
+import com.example.nice.models.SpecialistDataResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -14,4 +15,10 @@ interface InterfaceAPI {
         @Path("password") password: String?
     ): Call<ClientDataResponse>
 
+    @Headers("Accept: application/json")
+    @GET("Specialist/{login}&{password}")
+    fun SpecialistAuthorize(
+        @Path("login") login: String?,
+        @Path("password") password: String?
+    ): Call<SpecialistDataResponse>
 }

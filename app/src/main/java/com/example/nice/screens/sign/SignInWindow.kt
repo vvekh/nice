@@ -62,8 +62,8 @@ fun SignInWindow(navController: NavHostController, role : String) {
             Column(modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                OutlinedTextField(value = viewModel.clientLogin,
-                    onValueChange = { viewModel.ClientLoginUpdate(it) },
+                OutlinedTextField(value = viewModel.userLogin,
+                    onValueChange = { viewModel.UserLoginUpdate(it) },
                     label = { Text("Введите логин") },
                     shape = RoundedCornerShape(20.dp),
                     textStyle = TextStyle(fontSize = 17.sp),
@@ -80,7 +80,7 @@ fun SignInWindow(navController: NavHostController, role : String) {
                         )
                     }
                 )
-                OutlinedTextField(value = viewModel.clientPassword, onValueChange = { viewModel.ClientPasswordUpdate(it) },
+                OutlinedTextField(value = viewModel.userPassword, onValueChange = { viewModel.UserPasswordUpdate(it) },
                     label = { Text("Введите пароль") },
                     shape = RoundedCornerShape(20.dp),
                     textStyle = TextStyle(fontSize = 17.sp),
@@ -98,10 +98,8 @@ fun SignInWindow(navController: NavHostController, role : String) {
                         )
                     }
                 )
-                Button(onClick = {
-                    viewModel.Authorization(navController, role)
-                    navController.navigate(Screen.ProfileWindow.selectedRole(role))
-                                 },
+                Button(onClick = { viewModel.Authorization(role)
+                    navController.navigate(Screen.ProfileWindow.selectedRole(role)) },
                     modifier = Modifier.padding(top = 20.dp),
                     colors = ButtonDefaults.buttonColors(colorResource(id = R.color.siren)),
                     elevation = ButtonDefaults.buttonElevation(5.dp)
