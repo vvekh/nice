@@ -1,4 +1,4 @@
-package com.example.nice.models
+package com.example.nice.templates
 
 data class Note(
     val id: Int,

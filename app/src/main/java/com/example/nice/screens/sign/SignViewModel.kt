@@ -6,24 +6,25 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.example.nice.models.ClientDataResponse
-import com.example.nice.models.SpecialistDataResponse
+import com.example.nice.assistants.SetLocalCLient
+import com.example.nice.assistants.SetLocalSpecialist
 import com.example.nice.navigation.Screen
 import com.example.nice.retrofit.ClientAPI
 import com.example.nice.retrofit.InterfaceAPI
-import com.example.nice.screens.GetLocalClient
-import com.example.nice.screens.GetLocalSpecialist
-import com.example.nice.screens.SetLocalCLient
-import com.example.nice.screens.SetLocalSpecialist
+import com.example.nice.templates.ClientDataResponse
+import com.example.nice.templates.SpecialistDataResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class SignViewModel : ViewModel() {
+    //Переменные модели
     var userLogin by mutableStateOf("")
         private set
     var userPassword by mutableStateOf("")
         private set
+
+    //Методы, обновляющие переменные
     fun UserLoginUpdate(login: String){
         userLogin = login
     }
@@ -31,14 +32,7 @@ class SignViewModel : ViewModel() {
         userPassword = password
     }
 
-
-    fun LoadClientData(){
-        val client = GetLocalClient()
-    }
-    fun LoadSpecialistData(){
-        val specialist = GetLocalSpecialist()
-    }
-
+    //Метод авторизации, который использует переменные модели и методы записи локальных данных по шаблонам
     fun Authorization(navController: NavHostController, role: String) {
         var selectedRole = role
         val api = ClientAPI.start()?.create(InterfaceAPI::class.java)

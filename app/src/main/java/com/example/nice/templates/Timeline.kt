@@ -1,4 +1,4 @@
-package com.example.nice.models
+package com.example.nice.templates
 
 data class Timeline (
     val id: Int,

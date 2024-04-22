@@ -1,8 +1,9 @@
-package com.example.nice.screens
+package com.example.nice.assistants
 
-import com.example.nice.models.ClientDataResponse
-import com.example.nice.models.SpecialistDataResponse
+import com.example.nice.templates.ClientDataResponse
+import com.example.nice.templates.SpecialistDataResponse
 
+//Методы записи и получения локального юзера по шаблонам (в зависимости от роли)
 private var client: ClientDataResponse? = null
 fun SetLocalCLient(newClient: ClientDataResponse){
     client = ClientDataResponse(
@@ -17,7 +18,6 @@ fun SetLocalCLient(newClient: ClientDataResponse){
 fun GetLocalClient(): ClientDataResponse?{
     return client
 }
-
 private var specialist: SpecialistDataResponse? = null
 fun SetLocalSpecialist(newSpecialist: SpecialistDataResponse){
     specialist = SpecialistDataResponse(
@@ -35,6 +35,6 @@ fun SetLocalSpecialist(newSpecialist: SpecialistDataResponse){
         newSpecialist.status
     )
 }
-fun GetLocalSpecialist(): SpecialistDataResponse?{
+fun GetLocalSpecialist(): SpecialistDataResponse?{ //Получение локального юзера
     return specialist
 }
