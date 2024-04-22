@@ -1,6 +1,7 @@
 package com.example.nice.assistants
 
 import com.example.nice.templates.ClientDataResponse
+import com.example.nice.templates.PointDataResponse
 import com.example.nice.templates.SpecialistDataResponse
 
 //Методы записи и получения локального юзера по шаблонам (в зависимости от роли)
@@ -18,6 +19,8 @@ fun SetLocalCLient(newClient: ClientDataResponse){
 fun GetLocalClient(): ClientDataResponse?{
     return client
 }
+//
+
 private var specialist: SpecialistDataResponse? = null
 fun SetLocalSpecialist(newSpecialist: SpecialistDataResponse){
     specialist = SpecialistDataResponse(
@@ -35,6 +38,22 @@ fun SetLocalSpecialist(newSpecialist: SpecialistDataResponse){
         newSpecialist.status
     )
 }
-fun GetLocalSpecialist(): SpecialistDataResponse?{ //Получение локального юзера
+fun GetLocalSpecialist(): SpecialistDataResponse?{
     return specialist
+}
+//
+
+private var point: PointDataResponse? = null
+fun SetLocalPoint(newPoint: PointDataResponse){
+    point = PointDataResponse(
+        newPoint.id,
+        newPoint.pointname
+    )
+}
+fun GetLocalPoint(): PointDataResponse?{
+    return point
+}
+
+fun SetLocalPointList(list: List<PointDataResponse>){
+
 }

@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,24 +43,96 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.nice.R
 import com.example.nice.assistants.GetLocalClient
 import com.example.nice.assistants.GetLocalSpecialist
 import com.example.nice.templates.ClientDataResponse
+import com.example.nice.templates.PointDataResponse
 import com.example.nice.templates.SpecialistDataResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.util.Calendar
 
 
 @Composable
 fun ProfileWindow(navController: NavHostController, role: String){
+    val specialist: SpecialistDataResponse? = GetLocalSpecialist()
+    val viewModel: ProfileViewModel = ProfileViewModel()
+
+    var points by remember { mutableStateOf<List<PointDataResponse>>(emptyList()) }
+
+    GlobalScope.launch {
+        specialist?.let {
+            withContext(Dispatchers.IO) {
+                val pointsList = viewModel.SpecialistPoints(it.id!!.toInt())
+                points = pointsList
+            }
+        }
+    }
     var selectedRole = role
+
     if(selectedRole == "Client"){
         ClientProfile()
     }else if(selectedRole == "Specialist"){
-        SpecialistProfile()
+        Column(modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()){
+            Image(painter = painterResource(id = R.drawable.backk), contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize())
+        }
+        Column(modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center) {
+            Column(modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(painter = painterResource(id = R.drawable.specialist_pic), contentDescription = null,
+                    modifier = Modifier.size(150.dp))
+                ShowSpecialist(specialist!!.login, specialist!!.username, specialist!!.usersurname, specialist!!.birthdate)
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp, 20.dp, 20.dp, 0.dp),
+                    elevation = CardDefaults.cardElevation(5.dp),
+                    shape = RoundedCornerShape(25.dp),
+                    colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.siren))
+                ) {
+                    Column(modifier = Modifier.padding(20.dp)) {
+                        Text(
+                            text = "Образование:",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.white)
+                        )
+                        Text(
+                            text = "Дополнительное образование:",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.white)
+                        )
+                        Text(
+                            modifier = Modifier.padding(top = 20.dp),
+                            text = "Специалист работает со следующими темами:",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.white)
+                        )
+                        LazyColumn {
+                            items(points) { item ->
+                                PointSample(content = item.pointname.toString())
+                            }
+                        }
+                    }
+                }
+
+                ExitButtonComponent()
+            }
+        }
     }
 }
 @Composable
@@ -88,8 +161,7 @@ fun ClientProfile(){
 }
 
 @Composable
-fun SpecialistProfile(){
-    val specialist: SpecialistDataResponse? = GetLocalSpecialist()
+fun SpecialistProfile(points: List<PointDataResponse>, specialist: SpecialistDataResponse?) {
     Column(modifier = Modifier
         .fillMaxHeight()
         .fillMaxWidth()){
@@ -104,9 +176,9 @@ fun SpecialistProfile(){
             horizontalAlignment = Alignment.CenterHorizontally) {
             Image(painter = painterResource(id = R.drawable.specialist_pic), contentDescription = null,
                 modifier = Modifier.size(150.dp))
-           ShowSpecialist(specialist!!.login, specialist!!.username, specialist!!.usersurname, specialist!!.birthdate)
+            ShowSpecialist(specialist!!.login, specialist!!.username, specialist!!.usersurname, specialist!!.birthdate)
 
-            //CardComponent(specialist.id)
+            CardComponent(points)
 
             ExitButtonComponent()
         }
@@ -198,28 +270,38 @@ fun ClientCard(){
     }
 }
 @Composable
-fun CardComponent(id: Int){
-    val viewModel: ProfileViewModel = viewModel()
-    val points = viewModel.SpecialistPoints(id)
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(20.dp, 20.dp, 20.dp, 0.dp),
+fun CardComponent(list: List<PointDataResponse>) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(20.dp, 20.dp, 20.dp, 0.dp),
         elevation = CardDefaults.cardElevation(5.dp),
         shape = RoundedCornerShape(25.dp),
         colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.siren))
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-            Text(text = "Образование:", fontSize = 17.sp, fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.white))
-            Text(text = "Дополнительное образование:", fontSize = 17.sp, fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.white))
-            Text(modifier = Modifier.padding(top = 20.dp),
-                text = "Специалист работает со следующими темами:", fontSize = 17.sp, fontWeight = FontWeight.Bold,
-                color = colorResource(id = R.color.white))
+            Text(
+                text = "Образование:",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(id = R.color.white)
+            )
+            Text(
+                text = "Дополнительное образование:",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(id = R.color.white)
+            )
+            Text(
+                modifier = Modifier.padding(top = 20.dp),
+                text = "Специалист работает со следующими темами:",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(id = R.color.white)
+            )
             LazyColumn {
-                items(points){item ->
-                    Text(text = item.id.toString())
-                    Text(text = item.pointname.toString())
+                items(list) { item ->
+                    PointSample(content = item.pointname.toString())
                 }
             }
         }
