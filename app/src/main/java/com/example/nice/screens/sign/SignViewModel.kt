@@ -5,8 +5,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavHostController
 import com.example.nice.models.ClientDataResponse
 import com.example.nice.models.SpecialistDataResponse
+import com.example.nice.navigation.Screen
 import com.example.nice.retrofit.ClientAPI
 import com.example.nice.retrofit.InterfaceAPI
 import com.example.nice.screens.GetLocalClient
@@ -37,25 +39,27 @@ class SignViewModel : ViewModel() {
         val specialist = GetLocalSpecialist()
     }
 
-    fun Authorization(role: String) {
+    fun Authorization(navController: NavHostController, role: String) {
+        var selectedRole = role
         val api = ClientAPI.start()?.create(InterfaceAPI::class.java)
-        if(role == "Client"){
+        if(selectedRole == "Client"){
             val call: Call<ClientDataResponse>? = api?.ClientAuthorize(userLogin, userPassword)
             call!!.enqueue(object : Callback<ClientDataResponse> {
                 override fun onResponse(call: Call<ClientDataResponse>, response: Response<ClientDataResponse>) {
 
-                    Log.d("SUCCESS", java.lang.String.valueOf(response.toString()))
+                    Log.d("SUCCESS", response.body().toString())
 
                     val responseClient = response.body()
                     if (responseClient != null) {
                         SetLocalCLient(responseClient)
+                        navController.navigate(Screen.ProfileWindow.selectedRole(selectedRole))
                     }
 
                 }override fun onFailure(call: Call<ClientDataResponse>, t: Throwable) {
                     Log.d("BAD RESPONSE", java.lang.String.valueOf(t.toString()))
                 }
             })
-        }else if(role == "Specialist"){
+        }else if(selectedRole == "Specialist"){
             val call: Call<SpecialistDataResponse>? = api?.SpecialistAuthorize(userLogin, userPassword)
             call!!.enqueue(object : Callback<SpecialistDataResponse> {
                 override fun onResponse(call: Call<SpecialistDataResponse>, response: Response<SpecialistDataResponse>) {
@@ -65,6 +69,7 @@ class SignViewModel : ViewModel() {
                     val responseSpecialist = response.body()
                     if (responseSpecialist != null) {
                         SetLocalSpecialist(responseSpecialist)
+                        navController.navigate(Screen.ProfileWindow.selectedRole(selectedRole))
                     }
 
                 }override fun onFailure(call: Call<SpecialistDataResponse>, t: Throwable) {
@@ -72,7 +77,6 @@ class SignViewModel : ViewModel() {
                 }
             })
         }
-
     }
 
 }

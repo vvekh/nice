@@ -98,8 +98,7 @@ fun SignInWindow(navController: NavHostController, role : String) {
                         )
                     }
                 )
-                Button(onClick = { viewModel.Authorization(role)
-                    navController.navigate(Screen.ProfileWindow.selectedRole(role)) },
+                Button(onClick = { viewModel.Authorization(navController, role) },
                     modifier = Modifier.padding(top = 20.dp),
                     colors = ButtonDefaults.buttonColors(colorResource(id = R.color.siren)),
                     elevation = ButtonDefaults.buttonElevation(5.dp)

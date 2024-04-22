@@ -23,14 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.nice.R
-import com.example.nice.screens.GetLocalClient
 
 
 @Composable
 fun ProfileWindow(navController: NavHostController, role: String){
     var selectedRole = role
-    val cl = GetLocalClient()
-
     if(selectedRole == "Client"){
         ClientProfile()
     }else if(selectedRole == "Specialist"){
