@@ -24,15 +24,18 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,11 +60,12 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.util.Calendar
 
-
 @Composable
 fun ProfileWindow(navController: NavHostController, role: String){
+    var selectedRole = role
+    val client: ClientDataResponse? = GetLocalClient()
     val specialist: SpecialistDataResponse? = GetLocalSpecialist()
-    val viewModel: ProfileViewModel = ProfileViewModel()
+    val viewModel = ProfileViewModel()
 
     var points by remember { mutableStateOf<List<PointDataResponse>>(emptyList()) }
 
@@ -73,71 +77,15 @@ fun ProfileWindow(navController: NavHostController, role: String){
             }
         }
     }
-    var selectedRole = role
 
     if(selectedRole == "Client"){
-        ClientProfile()
+        ClientProfile(client)
     }else if(selectedRole == "Specialist"){
-        Column(modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()){
-            Image(painter = painterResource(id = R.drawable.backk), contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize())
-        }
-        Column(modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center) {
-            Column(modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(painter = painterResource(id = R.drawable.specialist_pic), contentDescription = null,
-                    modifier = Modifier.size(150.dp))
-                ShowSpecialist(specialist!!.login, specialist!!.username, specialist!!.usersurname, specialist!!.birthdate)
-
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp, 20.dp, 20.dp, 0.dp),
-                    elevation = CardDefaults.cardElevation(5.dp),
-                    shape = RoundedCornerShape(25.dp),
-                    colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.siren))
-                ) {
-                    Column(modifier = Modifier.padding(20.dp)) {
-                        Text(
-                            text = "Образование:",
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.white)
-                        )
-                        Text(
-                            text = "Дополнительное образование:",
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.white)
-                        )
-                        Text(
-                            modifier = Modifier.padding(top = 20.dp),
-                            text = "Специалист работает со следующими темами:",
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.white)
-                        )
-                        LazyColumn {
-                            items(points) { item ->
-                                PointSample(content = item.pointname.toString())
-                            }
-                        }
-                    }
-                }
-
-                ExitButtonComponent()
-            }
-        }
+        SpecialistProfileWithMenu(points = points, specialist = specialist)
     }
 }
 @Composable
-fun ClientProfile(){
-    val client: ClientDataResponse? = GetLocalClient()
+fun ClientProfile(client:ClientDataResponse?){
     Column(modifier = Modifier
         .fillMaxHeight()
         .fillMaxWidth()){
@@ -161,6 +109,22 @@ fun ClientProfile(){
 }
 
 @Composable
+fun SpecialistProfileWithMenu(points: List<PointDataResponse>, specialist: SpecialistDataResponse?) {
+    val menuState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
+    ModalNavigationDrawer(
+        drawerState = menuState,
+        drawerContent = {
+            MenuComponent(scope, menuState)
+        },
+        content = {
+            SpecialistProfile(points, specialist)
+        }
+    )
+}
+
+@Composable
 fun SpecialistProfile(points: List<PointDataResponse>, specialist: SpecialistDataResponse?) {
     Column(modifier = Modifier
         .fillMaxHeight()
@@ -177,14 +141,11 @@ fun SpecialistProfile(points: List<PointDataResponse>, specialist: SpecialistDat
             Image(painter = painterResource(id = R.drawable.specialist_pic), contentDescription = null,
                 modifier = Modifier.size(150.dp))
             ShowSpecialist(specialist!!.login, specialist!!.username, specialist!!.usersurname, specialist!!.birthdate)
-
             CardComponent(points)
-
             ExitButtonComponent()
         }
     }
 }
-
 
 
 @Composable
@@ -274,6 +235,7 @@ fun CardComponent(list: List<PointDataResponse>) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .height(450.dp)
             .padding(20.dp, 20.dp, 20.dp, 0.dp),
         elevation = CardDefaults.cardElevation(5.dp),
         shape = RoundedCornerShape(25.dp),
@@ -299,7 +261,7 @@ fun CardComponent(list: List<PointDataResponse>) {
                 fontWeight = FontWeight.Bold,
                 color = colorResource(id = R.color.white)
             )
-            LazyColumn {
+            LazyColumn() {
                 items(list) { item ->
                     PointSample(content = item.pointname.toString())
                 }
