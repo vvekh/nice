@@ -50,10 +50,3 @@ fun SetLocalPoint(newPoint: PointDataResponse){
         newPoint.pointname
     )
 }
-fun GetLocalPoint(): PointDataResponse?{
-    return point
-}
-
-fun SetLocalPointList(list: List<PointDataResponse>){
-
-}

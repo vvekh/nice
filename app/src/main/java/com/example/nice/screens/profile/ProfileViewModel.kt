@@ -10,8 +10,6 @@ import kotlinx.coroutines.withContext
 import retrofit2.Call
 
 class ProfileViewModel : ViewModel() {
-
-
     suspend fun SpecialistPoints(id: Int): List<PointDataResponse> {
         return withContext(Dispatchers.IO) {
             val api = ClientAPI.start()?.create(InterfaceAPI::class.java)

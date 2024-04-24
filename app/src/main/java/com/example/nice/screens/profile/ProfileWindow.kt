@@ -50,6 +50,7 @@ import androidx.navigation.NavHostController
 import com.example.nice.R
 import com.example.nice.assistants.GetLocalClient
 import com.example.nice.assistants.GetLocalSpecialist
+import com.example.nice.screens.PointSample
 import com.example.nice.templates.ClientDataResponse
 import com.example.nice.templates.PointDataResponse
 import com.example.nice.templates.SpecialistDataResponse
@@ -224,7 +225,7 @@ fun ClientCard(){
             modifier = Modifier
                 .height(250.dp)
                 .padding(start = 15.dp))
-        Image(painter = painterResource(id = R.drawable.panel_5), contentDescription = null,
+        Image(painter = painterResource(id = R.drawable.end_panel), contentDescription = null,
             modifier = Modifier
                 .height(250.dp)
                 .padding(start = 15.dp, end = 15.dp))
@@ -276,55 +277,5 @@ fun ExitButtonComponent(){
         modifier = Modifier.padding(top = 25.dp),
         elevation = ButtonDefaults.buttonElevation(5.dp)) {
         Text(text = "Выйти", fontSize = 20.sp, color = colorResource(id = R.color.white))
-    }
-}
-
-//НЕ ОТСЮДА
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatePickerComponent(){
-    val context: Context = LocalContext.current
-    val datePickerState = rememberDatePickerState()
-    var showDatePicker by remember { mutableStateOf(false) }
-
-    Column(modifier = Modifier.padding(top = 15.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center) {
-        Text(color = colorResource(id = R.color.purple),
-            fontWeight = FontWeight.Bold, fontSize = 20.sp,
-            text = "Дата не выбрана")
-        Button(onClick = {
-                         showDatePicker = true
-        },
-            colors = ButtonDefaults.buttonColors(colorResource(id = R.color.purple)),
-            elevation = ButtonDefaults.buttonElevation(5.dp)) {
-            Text(text = "Выбрать дату", fontSize = 20.sp, color = colorResource(id = R.color.white))
-        }
-    }
-    if(showDatePicker == true){
-        DatePickerDialog(
-            onDismissRequest = { /*TODO*/ },
-            confirmButton = { TextButton(onClick = {
-                val selectedDate = Calendar.getInstance().apply {
-                    timeInMillis = datePickerState.selectedDateMillis!!
-                }
-                if (selectedDate.after(Calendar.getInstance())) {
-                    Toast.makeText(context, "Selected date ${selectedDate.time} saved", Toast.LENGTH_SHORT).show()
-                    showDatePicker = false
-                } else {
-                    Toast.makeText(context, "Selected date should be after today, please select again", Toast.LENGTH_SHORT).show()
-                } }) { Text("Сохранить") } },
-            dismissButton = { TextButton(onClick = { showDatePicker = false }) { Text("Отменить") } },
-            colors = DatePickerDefaults.colors(containerColor = colorResource(id = R.color.white)))
-        {
-            DatePicker(state = datePickerState,
-                colors = DatePickerDefaults.colors(
-                    todayContentColor = colorResource(id = R.color.purple),
-                    todayDateBorderColor = colorResource(id = R.color.purple),
-                    selectedDayContentColor = colorResource(id = R.color.white),
-                    dayContentColor = colorResource(id = R.color.purple),
-                    selectedDayContainerColor = colorResource(id = R.color.purple)
-                ))
-        }
     }
 }

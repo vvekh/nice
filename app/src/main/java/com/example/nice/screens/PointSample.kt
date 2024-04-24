@@ -1,4 +1,4 @@
-package com.example.nice.screens.profile
+package com.example.nice.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape

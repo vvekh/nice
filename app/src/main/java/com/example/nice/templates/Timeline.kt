@@ -1,6 +1,6 @@
 package com.example.nice.templates
 
-data class Timeline (
-    val id: Int,
-    val timelinename: String
+data class TimelinesDataResponse (
+    val id: String?,
+    val timelinename: String?
 )

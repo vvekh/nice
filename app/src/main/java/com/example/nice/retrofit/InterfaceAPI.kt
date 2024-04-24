@@ -3,6 +3,7 @@ package com.example.nice.retrofit
 import com.example.nice.templates.ClientDataResponse
 import com.example.nice.templates.PointDataResponse
 import com.example.nice.templates.SpecialistDataResponse
+import com.example.nice.templates.TimelinesDataResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -26,4 +27,8 @@ interface InterfaceAPI {
     @Headers("Accept: application/json")
     @GET("Specialist/{id}/Points")
     fun SpecialistPoints(@Path("id") id: Int): Call<List<PointDataResponse>>
+
+    @Headers("Accept: application/json")
+    @GET("Timelines")
+    fun Timelines(): Call<List<TimelinesDataResponse>>
 }

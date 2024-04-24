@@ -13,6 +13,9 @@ import com.example.nice.retrofit.ClientAPI
 import com.example.nice.retrofit.InterfaceAPI
 import com.example.nice.templates.ClientDataResponse
 import com.example.nice.templates.SpecialistDataResponse
+import com.example.nice.templates.TimelinesDataResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -73,4 +76,18 @@ class SignViewModel : ViewModel() {
         }
     }
 
+    suspend fun Timelines(): List<TimelinesDataResponse>{
+        return withContext(Dispatchers.IO){
+            val api = ClientAPI.start()?.create(InterfaceAPI::class.java)
+            val call: Call<List<TimelinesDataResponse>>? = api?.Timelines()
+            val response = call?.execute()
+            if(response?.isSuccessful == true){
+                Log.d("RE", response.body().toString())
+                response.body() ?: emptyList()
+            }else{
+                Log.d("BAD RESPONSE", "Error while fetching data: ${response?.code()}")
+                emptyList()
+            }
+        }
+    }
 }
